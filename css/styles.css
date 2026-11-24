@@ -310,6 +310,62 @@ a:hover {
   font-weight: 600;
 }
 
+/* Headline under name */
+.headline {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: 0.01em;
+}
+
+/* Key highlights in About */
+.highlights {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 0.6rem 1.5rem;
+  color: var(--text-secondary);
+}
+
+.highlights li {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+}
+
+.highlights i {
+  color: var(--primary-color);
+  font-size: 0.85rem;
+}
+
+/* Achievement bullets in Experience */
+.achievements {
+  padding-left: 1.1rem;
+  margin-bottom: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.achievements li {
+  margin-bottom: 0.4rem;
+}
+
+.achievements li::marker {
+  color: var(--primary-color);
+}
+
+.achievements strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+@media (max-width: 576px) {
+  .publication-item {
+    flex-direction: column;
+  }
+}
+
 /* Social Icons */
 .social-icons {
   display: flex;

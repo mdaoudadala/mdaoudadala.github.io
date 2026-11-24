@@ -42,29 +42,36 @@ window.addEventListener('DOMContentLoaded', event => {
     });
 
     // Intersection Observer for fade-in animations
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -100px 0px'
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
-            }
-        });
-    }, observerOptions);
-
-    // Observe elements for animation
     const animateElements = document.querySelectorAll('.experience-item, .education-item, .project-card, .award-item, .publication-item, .conference-item, .skill-item, .competency-item');
-    
-    animateElements.forEach((el, index) => {
-        el.style.opacity = '0';
-        el.style.transform = 'translateY(30px)';
-        el.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
-        observer.observe(el);
-    });
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (!reduceMotion && 'IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+                const el = entry.target;
+                el.style.opacity = '1';
+                el.style.transform = 'translateY(0)';
+                observer.unobserve(el);
+                // Hand control back to the stylesheet so hover effects aren't delayed
+                el.addEventListener('transitionend', () => {
+                    el.style.transition = '';
+                    el.style.transform = '';
+                    el.style.opacity = '';
+                }, { once: true });
+            });
+        }, { threshold: 0.05, rootMargin: '0px 0px -40px 0px' });
+
+        animateElements.forEach(el => {
+            // Stagger only among siblings in the same group, capped so nothing waits long
+            const siblingIndex = Array.prototype.indexOf.call(el.parentElement.children, el);
+            const delay = Math.min(siblingIndex, 4) * 0.05;
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(16px)';
+            el.style.transition = `opacity 0.4s ease ${delay}s, transform 0.4s ease ${delay}s`;
+            observer.observe(el);
+        });
+    }
 
     // Active nav link highlighting on scroll
     const sections = document.querySelectorAll('section[id]');
